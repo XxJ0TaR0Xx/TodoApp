@@ -1,7 +1,7 @@
 package com.example.todoapp.model
 
 data class TodoItem (
-    var id: String,
+    var id: Int,
     var text: String,
     var importance: Importance,
     var deadline: String?,

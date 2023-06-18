@@ -1,6 +1,8 @@
 package com.example.todoapp.model
 
 import com.github.javafaker.Faker
+import java.text.FieldPosition
+
 
 typealias TodoItemListener = (todoItem: List<TodoItem>) -> Unit
 
@@ -12,8 +14,8 @@ class TodoViewModel {
 
     init {
         val faker = Faker.instance()
-        todoItems = (1..100).map { TodoItem(
-            id = it.toString(),
+        todoItems = (0..99).map { TodoItem(
+            id = it,
             text = faker.expression("lpl"),
             importance = Importance.LOW,
             deadline = faker.date().toString(),

@@ -1,19 +1,27 @@
 package com.example.todoapp
 
+import android.content.Context
+import android.graphics.Canvas
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupMenu
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.example.todoapp.databinding.ActivityMainBinding
 import com.example.todoapp.databinding.BusinessCellsBinding
 import com.example.todoapp.model.TodoItem
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 
 
 class TodoItemsAdapter(
-    private val actionListener: TodoItemActionListener
+    private val actionListener: TodoItemActionListener,
+    private val context: Context
 ) : RecyclerView.Adapter<TodoItemsAdapter.TodoItemsViewHolder>(), View.OnClickListener {
+
+
+    private val swipeCallback = SwipeCallback()
+    private val itemTouchHelper = ItemTouchHelper(swipeCallback)
 
     var todoItems: List<TodoItem> = emptyList()
         set(newvalue) {
@@ -22,20 +30,85 @@ class TodoItemsAdapter(
         }
 
 
+
+
     override fun onClick(v: View) {
         val item = v.tag as TodoItem
         when (v.id) {
-            R.id.ic_info -> {
-                showPopupMenu(v)
-            }
             R.id.checkbox -> {
-                //todo
+                actionListener.onChangeFlagItem(item)
             }
             else -> {
                 actionListener.onItemDetails(item)
             }
         }
     }
+
+    inner class SwipeCallback: ItemTouchHelper.Callback() {
+        override fun getMovementFlags(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder
+        ): Int {
+            val swipeFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+            return makeMovementFlags(0, swipeFlags)
+        }
+
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            return false
+        }
+
+        override fun onChildDraw(
+            c: Canvas,
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            dX: Float,
+            dY: Float,
+            actionState: Int,
+            isCurrentlyActive: Boolean
+        ) {
+
+            RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder,dX, dY, actionState, isCurrentlyActive)
+                .addBackgroundColor(ContextCompat.getColor(context, R.color.Red))
+                .addActionIcon(R.drawable.delete)
+                .create()
+                .decorate()
+
+
+
+
+
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
+            val position = viewHolder.absoluteAdapterPosition
+
+            when(direction){
+
+                ItemTouchHelper.LEFT -> {
+                    val item = todoItems[position]
+                    actionListener.onItemRemove(item)
+                }
+
+                ItemTouchHelper.RIGHT -> {
+                    Log.i("lol", "lol")
+                }
+
+            }
+        }
+
+    }
+    fun attachItemTouchHelperToRecyclerView(recyclerView: RecyclerView){
+        itemTouchHelper.attachToRecyclerView(recyclerView)
+    }
+
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoItemsViewHolder {
         val inflate = LayoutInflater.from(parent.context)
@@ -57,27 +130,28 @@ class TodoItemsAdapter(
             checkbox.tag = todoItem
 
             checkbox.isChecked = todoItem.flag
-            textCells.text = todoItem.id
+            textCells.text = todoItem.id.toString()
         }
     }
 
-    private fun showPopupMenu(view: View){
-        val popupMenu = PopupMenu(view.context, view)
-        val item = view.tag as TodoItem
+//    private fun showPopupMenu(view: View){
+//        val popupMenu = PopupMenu(view.context, view)
+//        val item = view.tag as TodoItem
+//
+//        popupMenu.menu.add(0,0, Menu.NONE, "Delete")
+//
+//        popupMenu.setOnMenuItemClickListener {
+//            when (it.itemId) {
+//                0 -> {
+//                    actionListener.onItemRemove(item)
+//                }
+//            }
+//            return@setOnMenuItemClickListener true
+//        }
+//
+//        popupMenu.show()
+//    }
 
-        popupMenu.menu.add(0,0, Menu.NONE, "Delete")
-
-        popupMenu.setOnMenuItemClickListener {
-            when (it.itemId) {
-                0 -> {
-                    actionListener.onItemRemove(item)
-                }
-            }
-            return@setOnMenuItemClickListener true
-        }
-
-        popupMenu.show()
-    }
 
     override fun getItemCount() = todoItems.size
 
