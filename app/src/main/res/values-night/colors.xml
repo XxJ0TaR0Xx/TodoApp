@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="Black">#FF000000</color>
+    <color name="White">#FFFFFFFF</color>
+    <color name="Separator">#33FFFFFF</color>
+    <color name="Overlay">#52000000</color>
+    <color name="Primary">#FFFFFF</color>
+    <color name="Secondary">#99FFFFFF</color>
+    <color name="Tertiary">#66FFFFFF</color>
+    <color name="Disable">#26FFFFFF</color>
+    <color name="Red">#FF453A</color>
+    <color name="Green">#34C759</color>
+    <color name="Blue">#007AFF</color>
+    <color name="Gray">#8E8E93</color>
+    <color name="GrayLight">#48484A</color>
+    <color name="BackPrimary">#161618</color>
+    <color name="BackSecondary">#252528</color>
+    <color name="Elevated">#3C3C3F</color>
+</resources>
