@@ -6,6 +6,8 @@ interface TodoItemActionListener {
 
     fun onItemRemove(todoItem: TodoItem)
 
+    //fun onItemRemoveAt(position: Int)
+
     fun onChangeFlagItem(todoItem: TodoItem)
 
     fun onItemDetails(todoItem: TodoItem)

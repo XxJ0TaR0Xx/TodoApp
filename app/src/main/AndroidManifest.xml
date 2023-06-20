@@ -10,14 +10,15 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Base.Theme.TodoApp"
+        android:theme="@style/Theme.TodoApp"
         tools:targetApi="31"
         android:name=".App">
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Base.Theme.TodoApp">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.TodoApp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,7 +1,6 @@
 package com.example.todoapp.model
 
 import com.github.javafaker.Faker
-import java.text.FieldPosition
 
 
 typealias TodoItemListener = (todoItem: List<TodoItem>) -> Unit
@@ -14,7 +13,7 @@ class TodoViewModel {
 
     init {
         val faker = Faker.instance()
-        todoItems = (0..99).map { TodoItem(
+        todoItems = (0..10).map { TodoItem(
             id = it,
             text = faker.expression("lpl"),
             importance = Importance.LOW,
@@ -25,10 +24,17 @@ class TodoViewModel {
         ) }.toMutableList()
     }
 
+
+
     fun getItemList(): List<TodoItem>{
         return todoItems
     }
 
+
+//    fun removeItemAt(position: Int){
+//        todoItems.removeAt(position)
+//        notifyChange()
+//    }
 
     fun removeItem(item: TodoItem) {
         val indexToDelete = todoItems.indexOfFirst { it.id == item.id }

@@ -30,8 +30,6 @@ class TodoItemsAdapter(
         }
 
 
-
-
     override fun onClick(v: View) {
         val item = v.tag as TodoItem
         when (v.id) {
@@ -72,14 +70,12 @@ class TodoItemsAdapter(
         ) {
 
             RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder,dX, dY, actionState, isCurrentlyActive)
-                .addBackgroundColor(ContextCompat.getColor(context, R.color.Red))
-                .addActionIcon(R.drawable.delete)
+                .addSwipeLeftBackgroundColor(ContextCompat.getColor(context, R.color.Red))
+                .addSwipeRightBackgroundColor(ContextCompat.getColor(context, R.color.Green))
+                .addSwipeLeftActionIcon(R.drawable.ic_baseline_delete_24dp)
+                .addSwipeRightActionIcon(R.drawable.check)
                 .create()
                 .decorate()
-
-
-
-
 
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
         }
@@ -87,16 +83,16 @@ class TodoItemsAdapter(
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
 
             val position = viewHolder.absoluteAdapterPosition
+            val item = todoItems[position]
 
             when(direction){
 
                 ItemTouchHelper.LEFT -> {
-                    val item = todoItems[position]
                     actionListener.onItemRemove(item)
                 }
 
                 ItemTouchHelper.RIGHT -> {
-                    Log.i("lol", "lol")
+                    actionListener.onChangeFlagItem(item)
                 }
 
             }
@@ -132,6 +128,8 @@ class TodoItemsAdapter(
             checkbox.isChecked = todoItem.flag
             textCells.text = todoItem.id.toString()
         }
+
+
     }
 
 //    private fun showPopupMenu(view: View){
