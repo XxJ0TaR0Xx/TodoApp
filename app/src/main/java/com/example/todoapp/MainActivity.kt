@@ -1,74 +1,91 @@
 package com.example.todoapp
 
+import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
+import android.util.Log
+import androidx.activity.viewModels
+import androidx.lifecycle.observe
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.todoapp.data.model.TodoItem
 import com.example.todoapp.databinding.ActivityMainBinding
-import com.example.todoapp.model.TodoItem
-import com.example.todoapp.model.TodoItemListener
-import com.example.todoapp.model.TodoViewModel
-import com.google.android.material.snackbar.Snackbar
+import com.example.todoapp.ui.mainActv.TodoViewModel
+import com.example.todoapp.ui.mainActv.model.TaskUiAction
+import com.example.todoapp.ui.mainActv.recycler.SwipeCallback
+import com.example.todoapp.ui.mainActv.recycler.TodoItemsAdapter
+import com.example.todoapp.ui.newTaskActv.NewTaskActivity
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
-    private lateinit var adapter: TodoItemsAdapter
 
-
-    private val todoItemViewModel: TodoViewModel
-        get() = (applicationContext as App).todoViewModel
-
+    private val todoViewModel by viewModels<TodoViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-        binding.fab.setOnClickListener { view ->
-            Snackbar
-                .make(view, "Hello my little friend", Snackbar.LENGTH_LONG)
-                .setAction("Action", null)
-                .show()
+        binding.apply {
+            fab.setOnClickListener { startNewTask() }
+            newItemField.setOnClickListener { startNewTask() }
         }
 
+        setupRecycler()
+    }
 
-        adapter = TodoItemsAdapter(object : TodoItemActionListener {
+    override fun onResume() {
+        super.onResume()
+        Log.d("tag", "onResume")
+    }
 
-            override fun onItemRemove(todoItem: TodoItem) {
-                todoItemViewModel.removeItem(todoItem)
-            }
-
-//            override fun onItemRemoveAt(position: Int) {
-//                todoItemViewModel.removeItemAt(position)
-//            }
-
-            override fun onChangeFlagItem(todoItem: TodoItem) {
-                todoItemViewModel.changeFlagItem(todoItem)
-            }
-
-            override fun onItemDetails(todoItem: TodoItem) {
-                Toast.makeText(this@MainActivity, "Item: ${todoItem.id}", Toast.LENGTH_SHORT).show()
-            }
-        }, this)
+    private fun setupRecycler() {
 
         val layoutManager = LinearLayoutManager(this)
-        binding.todoItemsRecycler.layoutManager = layoutManager
+        val adapter = TodoItemsAdapter(todoViewModel::onUiAction)
+
         binding.todoItemsRecycler.adapter = adapter
+        binding.todoItemsRecycler.layoutManager = layoutManager
+        setupRecyclerViewSwipes(adapter, binding.todoItemsRecycler)
 
-        adapter.attachItemTouchHelperToRecyclerView(binding.todoItemsRecycler)
-        todoItemViewModel.addListener(todoItemListener)
+        Log.d("tag", " 1-${todoViewModel.todoItems()}")
+
+        lifecycleScope.launch {
+            todoViewModel.todoItems().observe(this@MainActivity){
+                adapter.submitList(it)
+            }
+
+        }
+
+        Log.d("tag", " 2-${todoViewModel.todoItems()}")
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        todoItemViewModel.removeListener(todoItemListener)
+
+    private fun setupRecyclerViewSwipes(adapter: TodoItemsAdapter, recyclerView: RecyclerView) {
+        val swipe = SwipeCallback(
+            context = applicationContext,
+            onLeftSwipe = { position ->
+                val item = adapter.getItem(position)
+                todoViewModel.onUiAction(TaskUiAction.DeleteTask(item))
+            },
+            onRightSwipe = { position ->
+                val item = adapter.getItem(position = position)
+                val newItem = item.copy(flag = !item.flag)
+                todoViewModel.onUiAction(TaskUiAction.UpdateTask(newItem))
+            }
+        )
+        val itemTouchHelper = ItemTouchHelper(swipe)
+        itemTouchHelper.attachToRecyclerView(binding.todoItemsRecycler)
     }
 
-
-    private val todoItemListener: TodoItemListener = {
-        adapter.todoItems = it
+    private fun startNewTask() {
+        val intent = Intent(this, NewTaskActivity::class.java)
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, android.R.anim.fade_out)
     }
 
 

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     android:id="@+id/business_cells"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -25,6 +24,16 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+        
+        <ImageView
+            android:id="@+id/priorityIcon"
+            app:layout_constraintStart_toEndOf="@id/checkbox"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/text_cells"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"/>
 
         <TextView
             android:id="@+id/text_cells"
@@ -32,10 +41,12 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:text="Купить что-то"
+            android:textColor="@color/Primary"
             android:textSize="20sp"
+            android:maxLines="3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ic_info"
-            app:layout_constraintStart_toEndOf="@+id/checkbox"
+            app:layout_constraintStart_toEndOf="@+id/priorityIcon"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView

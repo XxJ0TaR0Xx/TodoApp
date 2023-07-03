@@ -10,4 +10,12 @@
     <string name="myAffairs">Мои дела</string>
     <string name="done">Выполнено -</string>
     <string name="fab">FAB</string>
+    <string name="save">СОХРАНИТЬ</string>
+    <string name="delete">Удалить</string>
+    <string name="do_it_till">Сделать до</string>
+    <string name="priority">Важность</string>
+    <string name="priority_no">Нет</string>
+    <string name="priority_low">Низкая</string>
+    <string name="priority_high"><font fgcolor='#FF3B30'>!! Высокая</font></string>
+    <string name="select_date">Выберите дату</string>
 </resources>

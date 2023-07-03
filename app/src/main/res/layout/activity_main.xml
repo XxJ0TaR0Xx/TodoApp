@@ -105,16 +105,7 @@
                     android:src="@drawable/add"
                     app:tint="@color/Tertiary" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/Body"
-                    android:text="New"
-                    android:layout_gravity="center"
-                    android:textAppearance="?attr/textAppearanceBodyLarge"
-                    android:textColor="@color/Tertiary" />
             </LinearLayout>
-
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
